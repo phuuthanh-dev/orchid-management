@@ -67,13 +67,6 @@
   color: white;
 }
 
-footer {
-  text-align: center;
-  padding: 3px;
-  background-color: DarkSalmon;
-  color: white;
-}
-
 .orchid-list {
   display: flex;
   flex-wrap: wrap;
