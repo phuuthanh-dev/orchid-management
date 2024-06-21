@@ -39,6 +39,19 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
+## Preview Screenshot
+
+<img src="./snapshots/Capture1.JPG" style="border-radius:4%" width="30%" height="49%" />&nbsp;
+<img src="./snapshots/Capture2.JPG" style="border-radius:4%" width="30%" height="49%" />&nbsp;
+<img src="./snapshots/Capture3.JPG" style="border-radius:4%" width="30%" height="49%" />&nbsp;
+<img src="./snapshots/Capture4.JPG" style="border-radius:4%" width="30%" height="49%" />&nbsp;
+<img src="./snapshots/Capture5.JPG" style="border-radius:4%" width="30%" height="49%" />&nbsp;
+<img src="./snapshots/Capture6.JPG" style="border-radius:4%" width="30%" height="49%" />&nbsp;
+<img src="./snapshots/Capture7.JPG" style="border-radius:4%" width="30%" height="49%" />&nbsp;
+<img src="./snapshots/Capture8.JPG" style="border-radius:4%" width="30%" height="49%" />&nbsp;
+<img src="./snapshots/Capture9.JPG" style="border-radius:4%" width="30%" height="49%" />&nbsp;
+
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
