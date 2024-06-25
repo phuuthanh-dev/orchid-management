@@ -1,34 +1,36 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useOrchid } from "../../hooks/useOrchid";
 import { Rating } from "./Rating";
+import { getOrchidById } from "../../api/OrchidsAPI";
 
 export default function OrchidDetail() {
   const { id } = useParams();
   const orchidList = useOrchid();
   const [orchid, setOrchid] = useState(null);
   const [orchidSameCategory, setOrchidSameCategory] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrchidDetails = async () => {
-      const foundOrchid = orchidList.find((o) => o.id === id);
-      if (!foundOrchid) return;
+      const foundOrchid = await getOrchidById(id);
+      if (!foundOrchid) navigate("/");
       const sameCategory = orchidList
         .filter(
-          (p) => p.category === foundOrchid.category && p.id !== foundOrchid.id
+          (o) => o.category === foundOrchid.category && o.id !== foundOrchid.id
         )
         .slice(0, 4);
       setOrchidSameCategory(sameCategory);
       setOrchid(foundOrchid);
     };
     fetchOrchidDetails();
-  }, [id, orchidList]);
+  }, [id, orchidList, navigate]);
 
   return (
     <div className="container" style={{ textAlign: "left" }}>
       <div className="row mt-4 mb-4">
         <div className="col-md-4">
-          <div className="row" style={{textAlign: "center", marginBottom: "10px"}}>
+          <div className="row" style={{ textAlign: "center", marginBottom: "10px" }}>
             <div className="col-12">
               <img
                 src={orchid?.image}
@@ -83,29 +85,33 @@ export default function OrchidDetail() {
             </div>
           </div>
         </div>
-        {orchidSameCategory.length > 0 && (
-          <h2 className="mt-4">Same Category: </h2>
-        )}
-        {orchidSameCategory.map((orchid) => {
-          return (
-            <div className="col-md-2 mb-4 me-4 orchid-item" key={orchid.id}>
-              <Link className="text-dark" to={"/detail/" + orchid.id} >
-                <img
-                  src={orchid.image}
-                  alt=""
-                  style={{
-                    marginTop: "12px",
-                    width: "100%",
-                    height: "250px",
-                  }}
-                />
-                <p className="fw-bold">Name: {orchid.name}</p>
-                <p>{Rating(orchid.rating)}</p>
-                <p>Category: {orchid.category}</p>
-              </Link>
-            </div>
-          );
-        })}
+        {
+          orchidSameCategory.length > 0 && (
+            <h2 className="mt-4">Same Category: </h2>
+          )
+        }
+        {
+          orchidSameCategory.map((orchid) => {
+            return (
+              <div className="col-md-2 mb-4 me-4 orchid-item" key={orchid.id}>
+                <Link className="text-dark" to={"/detail/" + orchid.id} >
+                  <img
+                    src={orchid.image}
+                    alt=""
+                    style={{
+                      marginTop: "12px",
+                      width: "100%",
+                      height: "250px",
+                    }}
+                  />
+                  <p className="fw-bold">Name: {orchid.name}</p>
+                  <p>{Rating(orchid.rating)}</p>
+                  <p>Category: {orchid.category}</p>
+                </Link>
+              </div>
+            );
+          })
+        }
       </div>
     </div>
   );

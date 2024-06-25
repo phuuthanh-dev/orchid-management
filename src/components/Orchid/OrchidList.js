@@ -4,13 +4,28 @@ import { Link, useParams } from "react-router-dom";
 import OrchidListItem from "./OrchidListItem";
 import { Container } from "react-bootstrap";
 import { useCategory } from "../../hooks/useCategory";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function OrchidList() {
   const orchidList = useOrchid();
-  const [searchTerm, setSearchTerm] = useState("");
   const { category } = useParams();
   const [filteredOrchids, setFilteredOrchids] = useState(orchidList);
+  const [debouncedTxtSearch, setDebouncedTxtSearch] = useState('');
+  const [txtSearch, setTxtSearch] = useState('');
   const categories = useCategory();
+
+  const debouncedTxtSearchChange = useDebouncedCallback(
+    (txtSearch) => {
+      setDebouncedTxtSearch(txtSearch);
+    },
+    1000
+  );
+
+  const handleTxtSearch = (e) => {
+    const value = e.target.value;
+    setTxtSearch(value);
+    debouncedTxtSearchChange(value);
+  };
 
   useEffect(() => {
     setFilteredOrchids(orchidList);
@@ -20,13 +35,13 @@ export default function OrchidList() {
       );
       setFilteredOrchids(filterByCategory);
     }
-    if (searchTerm) {
+    if (debouncedTxtSearch) {
       const filterByName = orchidList.filter((orchid) =>
-        orchid.name.toLowerCase().includes(searchTerm.toLowerCase())
+        orchid.name.toLowerCase().includes(debouncedTxtSearch.toLowerCase())
       );
       setFilteredOrchids(filterByName);
     }
-  }, [orchidList, category, searchTerm]);
+  }, [orchidList, category, debouncedTxtSearch]);
 
   return (
     <Container>
@@ -42,9 +57,8 @@ export default function OrchidList() {
                 {categories.map((c) => (
                   <li
                     key={c.id}
-                    className={`list-group-item ${
-                      c.name === category ? "active" : ""
-                    }`}
+                    className={`list-group-item ${c.name === category ? "active" : ""
+                      }`}
                   >
                     <Link className="text-dark" to={`/${c.name}`}>
                       {c.name}
@@ -58,8 +72,8 @@ export default function OrchidList() {
                 type="text"
                 className="form-control mb-3"
                 placeholder="Search by name..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={txtSearch}
+                onChange={handleTxtSearch}
               />
             </div>
           </div>

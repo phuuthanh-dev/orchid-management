@@ -12,18 +12,41 @@ import { DeleteOrchidModal } from "../Modal/DeleteOrchid";
 import { getAllOrchids } from "../../api/OrchidsAPI";
 import { EditOrchidModal } from "../Modal/EditOrchid";
 import { AddOrchidModal } from "../Modal/AddOrchid";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function List() {
   const [orchidList, setOrchidList] = useState([]);
   const [isRefresh, setIsRefresh] = useState(false);
+  const [debouncedTxtSearch, setDebouncedTxtSearch] = useState('');
+  const [txtSearch, setTxtSearch] = useState('');
+
+  const debouncedTxtSearchChange = useDebouncedCallback(
+    (txtSearch) => {
+      setDebouncedTxtSearch(txtSearch);
+    },
+    1000
+  );
+
+  const handleTxtSearch = (e) => {
+    const value = e.target.value;
+    setTxtSearch(value);
+    debouncedTxtSearchChange(value);
+  };
   
   useEffect(() => {
-    fetchOrchids();
-  }, [isRefresh]);
+    fetchOrchids(debouncedTxtSearch);
+  }, [isRefresh, debouncedTxtSearch]);
 
-  const fetchOrchids = async () => {
+  const fetchOrchids = async (debouncedTxtSearch) => {
     const data = await getAllOrchids();
-    setOrchidList(data);
+    if (debouncedTxtSearch) {
+      const filterByName = data.filter((orchid) =>
+        orchid.name.toLowerCase().includes(debouncedTxtSearch.toLowerCase())
+      );
+      setOrchidList(filterByName);
+    } else {
+      setOrchidList(data);
+    }
     setIsRefresh(false);
   };
 
@@ -31,6 +54,15 @@ export default function List() {
     <Container className="mt-4" style={{ textAlign: "start" }}>
       <div className="d-flex mb-2" style={{ justifyContent: "space-between" }}>
         <h1 className="fw-bold">List Orchid</h1>
+        <div className="mt-2">
+              <input
+                type="text"
+                className="form-control mb-3"
+                placeholder="Search by name..."
+                value={txtSearch}
+                onChange={handleTxtSearch}
+              />
+            </div>
         <AddOrchidModal setIsRefresh={setIsRefresh} />
       </div>
       <Table striped bordered hover>
@@ -76,7 +108,7 @@ export default function List() {
                   <EditOrchidModal
                     orchid={orchid}
                     setIsRefresh={setIsRefresh}
-                  ></EditOrchidModal>
+                  />
                   <DeleteOrchidModal
                     orchid={orchid}
                     setIsRefresh={setIsRefresh}
