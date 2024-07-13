@@ -24,6 +24,7 @@ export const EditOrchidModal = ({ orchid, setIsRefresh }) => {
       color: orchid.color,
       origin: orchid.origin,
       category: orchid.category,
+      date: orchid.date,
     },
     validationSchema: Yup.object({
       name: Yup.string()
@@ -38,6 +39,9 @@ export const EditOrchidModal = ({ orchid, setIsRefresh }) => {
       color: Yup.string().required("Color is required."),
       origin: Yup.string().required("Origin is required."),
       category: Yup.string().required("Category is required."),
+      date: Yup.date()
+        .required("Date is required.")
+        .max(new Date(), "Date cannot be in the future."),
     }),
     onSubmit: (values) => {
       editOrchidById(values).then((result) => {
@@ -155,6 +159,18 @@ export const EditOrchidModal = ({ orchid, setIsRefresh }) => {
                   )}
                 </Form.Group>
                 <Form.Group className="mb-3">
+                  <Form.Label>Date</Form.Label>
+                  <Form.Control
+                    type="date"
+                    name="date"
+                    value={formik.values.date}
+                    onChange={formik.handleChange}
+                  />
+                  {formik.errors.date && (
+                    <Alert variant="danger">{formik.errors.date}</Alert>
+                  )}
+                </Form.Group>
+                <Form.Group className="mb-3">
                   <Form.Label>Origin</Form.Label>
                   <Form.Control
                     type="text"
@@ -175,15 +191,11 @@ export const EditOrchidModal = ({ orchid, setIsRefresh }) => {
                     value={formik.values.category}
                     onChange={formik.handleChange}
                   >
+                    <option value="" disabled>Choose Category</option>
                     {categories.map((category) => (
                       <option
                         key={category.id}
                         value={category.name}
-                        selected={
-                          formik.values.category === category.name
-                            ? "selected"
-                            : ""
-                        }
                       >
                         {category.name}
                       </option>

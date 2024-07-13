@@ -23,6 +23,7 @@ export const AddOrchidModal = ({ setIsRefresh }) => {
       color: "",
       origin: "",
       category: "",
+      date: "",
     },
     validationSchema: Yup.object({
       name: Yup.string()
@@ -37,6 +38,9 @@ export const AddOrchidModal = ({ setIsRefresh }) => {
       color: Yup.string().required("Color is required."),
       origin: Yup.string().required("Origin is required."),
       category: Yup.string().required("Category is required."),
+      date: Yup.date()
+        .required("Date is required.")
+        .max(new Date(), "Date cannot be in the future."),
     }),
     onSubmit: async (values) => {
       try {
@@ -146,6 +150,18 @@ export const AddOrchidModal = ({ setIsRefresh }) => {
                   />
                   {formik.errors.color && (
                     <Alert variant="danger">{formik.errors.color}</Alert>
+                  )}
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Date</Form.Label>
+                  <Form.Control
+                    type="date"
+                    name="date"
+                    value={formik.values.date}
+                    onChange={formik.handleChange}
+                  />
+                  {formik.errors.date && (
+                    <Alert variant="danger">{formik.errors.date}</Alert>
                   )}
                 </Form.Group>
                 <Form.Group className="mb-3">

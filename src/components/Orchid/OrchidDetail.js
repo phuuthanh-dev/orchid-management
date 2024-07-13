@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useOrchid } from "../../hooks/useOrchid";
 import { Rating } from "./Rating";
 import { getOrchidById } from "../../api/OrchidsAPI";
+import { Badge, Card, Col, Container, Image, Row } from "react-bootstrap";
 
 export default function OrchidDetail() {
   const { id } = useParams();
@@ -27,30 +28,31 @@ export default function OrchidDetail() {
   }, [id, orchidList, navigate]);
 
   return (
-    <div className="container" style={{ textAlign: "left" }}>
-      <div className="row mt-4 mb-4">
-        <div className="col-md-4">
-          <div className="row" style={{ textAlign: "center", marginBottom: "10px" }}>
-            <div className="col-12">
-              <img
+    <Container style={{ textAlign: "left" }}>
+      <Row className="mt-4 mb-4">
+        <Col md={4}>
+          <Row style={{ textAlign: "center", marginBottom: "10px" }}>
+            <Col>
+              <Image
                 src={orchid?.image}
                 alt={orchid?.name}
                 style={{ width: "350px", height: "350px" }}
+                fluid
               />
-            </div>
-          </div>
-        </div>
-        <div className="col-md-8">
-          <div className="row">
-            <div className="col-8">
+            </Col>
+          </Row>
+        </Col>
+        <Col md={8}>
+          <Row>
+            <Col>
               <h5>{Rating(orchid?.rating)}</h5>
               <h4>
                 {orchid?.name}
-                {
-                  <span style={{ color: "Red" }}>
-                    {orchid?.isSpecial ? " (Special)" : ""}
-                  </span>
-                }
+                {orchid?.isSpecial && (
+                  <Badge bg="danger" className="ms-2">
+                    Special
+                  </Badge>
+                )}
               </h4>
               <hr />
               <div>
@@ -82,37 +84,39 @@ export default function OrchidDetail() {
                 </span>
               </div>
               <hr />
-            </div>
-          </div>
-        </div>
-        {
-          orchidSameCategory.length > 0 && (
+            </Col>
+          </Row>
+        </Col>
+        {orchidSameCategory.length > 0 && (
+          <Col>
             <h2 className="mt-4">Same Category: </h2>
-          )
-        }
-        {
-          orchidSameCategory.map((orchid) => {
-            return (
-              <div className="col-md-2 mb-4 me-4 orchid-item" key={orchid.id}>
-                <Link className="text-dark" to={"/detail/" + orchid.id} >
-                  <img
-                    src={orchid.image}
-                    alt=""
-                    style={{
-                      marginTop: "12px",
-                      width: "100%",
-                      height: "250px",
-                    }}
-                  />
-                  <p className="fw-bold">Name: {orchid.name}</p>
-                  <p>{Rating(orchid.rating)}</p>
-                  <p>Category: {orchid.category}</p>
-                </Link>
-              </div>
-            );
-          })
-        }
-      </div>
-    </div>
+            <Row className="mt-4">
+              {orchidSameCategory.map((orchid) => (
+                <Col key={orchid.id} md={3} className="mb-4">
+                  <Card style={{ width: "100%" }}>
+                    <Card.Img
+                      variant="top"
+                      src={orchid.image}
+                      alt=""
+                      style={{ height: "250px", objectFit: "cover" }}
+                    />
+                    <Card.Body>
+                      <Card.Title>{orchid.name}</Card.Title>
+                      <Card.Text>
+                        <p>{Rating(orchid.rating)}</p>
+                        <p>Category: {orchid.category}</p>
+                      </Card.Text>
+                      <Link className="btn btn-outline-dark" to={`/detail/${orchid.id}`}>
+                        View Details
+                      </Link>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          </Col>
+        )}
+      </Row>
+    </Container>
   );
 }

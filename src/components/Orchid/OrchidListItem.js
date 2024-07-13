@@ -54,6 +54,9 @@ export default function OrchidListItem(props) {
                   <span className="mt-4 text-dark">{`Category: ${orchid.category}`}</span>
                 </div>
               </div>
+              <Link className="mt-2 btn btn-outline-dark" to={`/detail/${orchid.id}`}>
+                View Details
+              </Link>
             </Card.Body>
           </Link>
         </div>

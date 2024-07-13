@@ -45,6 +45,7 @@ export default function List() {
       );
       setOrchidList(filterByName);
     } else {
+      data.sort((a, b) => b.id - a.id);
       setOrchidList(data);
     }
     setIsRefresh(false);
